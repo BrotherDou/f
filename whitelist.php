@@ -5,7 +5,7 @@ declare(strict_types=1);
 // 不需要引号、逗号或 => true；大小写均可；空行和 # 开头的备注行会被忽略。
 // 请填写账号用户名（Player.Name），不要填写显示名称（DisplayName）或 UserId。
 const WHITELIST_PLAYERS = <<<'WHITELIST_NAMES'
-
+abcd
 WHITELIST_NAMES;
 
 header('Content-Type: application/json; charset=utf-8');
