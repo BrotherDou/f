@@ -23,7 +23,6 @@ kjcjjdu
 ksksuxhshsksixu
 91ydjsjsk
 7891wsGSB
-LSHNB130718
 # ============================================
 # 免费白名单列表
 CN_1145091
