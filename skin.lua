@@ -1,3 +1,60 @@
+local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
+
+WindUI.TransparencyValue = 0.15
+
+WindUI:AddTheme({
+    Name = "CrimsonRed",
+    Accent = "#1a0a0a",
+    Dialog = "#1a0a0a",
+    Outline = "#FF3B3B",
+    Text = "#FFFFFF",
+    Placeholder = "#000000",
+    Background = "#0e0505",
+    Button = "#5b1f1f",
+    Icon = "#ff2d2d"
+})
+
+WindUI:SetTheme("CrimsonRed")
+
+local Window = WindUI:CreateWindow({
+    Title = "殺脚本┃皮肤管理",
+    Icon = "crown",
+    Author = "风御 X",
+    Folder = "wind ui",
+    Size = UDim2.fromOffset(550, 400),
+    Position = UDim2.new(0.5, 0, 0.5, 0),
+    Theme = "CrimsonRed",
+    Background = WindUI:Gradient({
+        ["0"]   = { Color = Color3.fromHex("#1a0808"), Transparency = 0 },
+        ["50"]  = { Color = Color3.fromHex("#3d0f0f"), Transparency = 0 },
+        ["100"] = { Color = Color3.fromHex("#000000"), Transparency = 0 }
+    }, { Rotation = 150 }),
+    Transparent = true,
+    HideSearchBar = true,
+    SideBarWidth = 150,
+    ScrollBarEnabled = true,
+    CornerRadius = UDim.new(0, 14),
+    DropShadow = true
+})
+
+Window:SetToggleKey(Enum.KeyCode.K)
+WindUI:SetFont("rbxasset://fonts/families/AccanthisADFStd.json")
+
+Window:EditOpenButton({
+    Title = "皮肤",
+    Icon = "crown",
+    CornerRadius = UDim.new(0, 16),
+    StrokeThickness = 2,
+    OnlyMobile = false,
+    Enabled = true,
+    Draggable = true,
+    Active = true,
+    Color = ColorSequence.new(
+        Color3.fromRGB(255, 60, 60),
+        Color3.fromRGB(255, 200, 200)
+    )
+})
+
 local function isValidAnimationId(id)
     local num = tostring(id):match("%d+")
     if not num then return false end
@@ -40,151 +97,22 @@ for _, v in ipairs(game:GetDescendants()) do
     end
 end
 
-local function loadRemote(url)
-    local ok, result = pcall(function()
-        return game:HttpGet(url)
-    end)
-    if not ok or not result or #result < 10 then
-        return false, "HttpGet failed"
-    end
-    return true, result
-end
+local slaTab = Window:Tab({ Title = "斩首者",     Icon = "skull" })
+local johTab = Window:Tab({ Title = "约翰.多",    Icon = "user" })
+local cooTab = Window:Tab({ Title = "酷小孩",     Icon = "smile" })
+local lXlTab = Window:Tab({ Title = "1X1X1X1",    Icon = "shield" })
+local sheTab = Window:Tab({ Title = "谢德莱茨基", Icon = "heart-crack" })
+local chaTab = Window:Tab({ Title = "机会",       Icon = "dice-5" })
+local twoTab = Window:Tab({ Title = "两次",       Icon = "users" })
 
-local function compile(code)
-    local func, err = loadstring(code)
-    if not func then
-        return false, err
-    end
-    local ok, result = pcall(func)
-    if not ok then
-        return false, result
-    end
-    return true, result
-end
-
-local success, content = loadRemote("https://www.kr520.top/luoyeproui.lua")
-if not success then
-    return
-end
-
-local modified = content:gsub("game%.Players", "game:GetService('Players')")
-local ok, result = compile(modified)
-
-if not ok then
-    ok, result = compile(content)
-    if not ok then
-        return
-    end
-end
-
-local WindUI = result
-
-local Window = WindUI:CreateWindow({
-    User = {
-        Enabled = false,
-        Callback = function() end,
-        Anonymous = false,
-    },
-    Title = "殺脚本┃皮肤管理",
-    Author = "",
-    IconThemed = false,
-    ScrollBarEnabled = true,
-    Folder = "wind ui",
-    HideSearchBar = true,
-    Transparent = true,
-    SideBarWidth = 200,
-    Theme = "Dark",
-    Icon = "crown",
-    Size = UDim2.fromOffset(550, 300),
-})
-
-local RunService = game:GetService("RunService")
-
-Window:EditOpenButton({
-    Title = "皮肤",
-    Icon = "crown",
-    CornerRadius = UDim.new(0, 16),
-    StrokeThickness = 2,
-    OnlyMobile = false,
-    Enabled = true,
-    Draggable = true,
-    Active = true,
-
-    Color = ColorSequence.new(
-        Color3.fromRGB(120, 170, 255),
-        Color3.fromRGB(235, 240, 255)
-    )
-})
-
-local fpsTag = Window:Tag({
-    Title = "皮肤列表",
-    Icon = "",
-    Color = Color3.fromRGB(255, 0, 0),
-    Radius = 13,
-})
-
-do
-    local orig = Window.Tab
-    function Window:Tab(cfg)
-        if not cfg.Collapsible then
-            return orig(self, cfg)
-        end
-        local sec = self:Section({
-            Title = cfg.Title,
-            Icon = cfg.Icon,
-            Opened = cfg.Opened ~= false,
-        })
-        local proxy = setmetatable({}, { __index = sec })
-        function proxy:Tab(sc)
-            return sec:Tab(sc)
-        end
-        return proxy
-    end
-end
-
-skin = Window:Tab({
-    Title = "角色皮肤",
-    Collapsible = true,
-    Opened = false,
-    Locked = false,
-})
-
-slaTab = skin:Tab({
-    Title = "斩首者",
-})
-
-johTab = skin:Tab({
-    Title = "约翰.多",
-})
-
-cooTab = skin:Tab({
-    Title = "酷小孩",
-})
-
-lXlTab = skin:Tab({
-    Title = "1X1X1X1",
-})
-
-sheTab = skin:Tab({
-    Title = "谢德莱茨基",
-})
-
-chaTab = skin:Tab({
-    Title = "机会",
-})
-
-twoTab = skin:Tab({
-    Title = "两次",
-})
-
-slaTab:Section({
+local slaSection = slaTab:Section({
     Title = "斩首者皮肤列表",
-    Box = true,
-    Opened = true,
+    Opened = true
 })
 
-slaTab:Button({
+slaSection:Button({
     Title = "恶魔化",
+    Icon = "flame",
     Callback = function()
         _G.SkinEnabled = false
         if _G.SkinConnections then
@@ -227,15 +155,15 @@ slaTab:Button({
         local root = char:WaitForChild("HumanoidRootPart")
         local head = char:WaitForChild("Head")
 
-        for _,v in pairs(char:GetChildren()) do
+        for _, v in pairs(char:GetChildren()) do
             if v:IsA("Accessory") then
                 v:Destroy()
             end
         end
 
-        for _,v in pairs(char:GetDescendants()) do
+        for _, v in pairs(char:GetDescendants()) do
             if v:IsA("BasePart") then
-                v.Color = Color3.fromRGB(15,15,15)
+                v.Color = Color3.fromRGB(15, 15, 15)
                 v.Material = Enum.Material.SmoothPlastic
             end
         end
@@ -273,9 +201,9 @@ slaTab:Button({
 
         local halo = Instance.new("Part")
         halo.Name = "DarkHalo"
-        halo.Size = Vector3.new(1,1,1)
+        halo.Size = Vector3.new(1, 1, 1)
         halo.Material = Enum.Material.Neon
-        halo.Color = Color3.fromRGB(255,0,0)
+        halo.Color = Color3.fromRGB(255, 0, 0)
         halo.Anchored = true
         halo.CanCollide = false
         halo.CanTouch = false
@@ -285,21 +213,21 @@ slaTab:Button({
         local mesh = Instance.new("SpecialMesh")
         mesh.MeshType = Enum.MeshType.FileMesh
         mesh.MeshId = "rbxassetid://3270017"
-        mesh.Scale = Vector3.new(1.5,1.5,0.08)
+        mesh.Scale = Vector3.new(1.5, 1.5, 0.08)
         mesh.Parent = halo
 
         local haloSmoke = Instance.new("ParticleEmitter")
         haloSmoke.Texture = "rbxasset://textures/particles/smoke_main.dds"
         haloSmoke.Rate = 8
-        haloSmoke.Lifetime = NumberRange.new(0.5,1)
-        haloSmoke.Speed = NumberRange.new(0,0.3)
+        haloSmoke.Lifetime = NumberRange.new(0.5, 1)
+        haloSmoke.Speed = NumberRange.new(0, 0.3)
         haloSmoke.Parent = halo
 
         task.spawn(function()
             while halo.Parent and root.Parent and _G.SkinEnabled do
-                local pulse = (math.sin(tick()*4)+1)/2
-                halo.Color = Color3.fromRGB(55 + (200*pulse), 0, 0)
-                halo.CFrame = CFrame.new(root.Position + Vector3.new(0,3.2,0)) * CFrame.Angles(math.rad(90), 0, tick()*3)
+                local pulse = (math.sin(tick() * 4) + 1) / 2
+                halo.Color = Color3.fromRGB(55 + (200 * pulse), 0, 0)
+                halo.CFrame = CFrame.new(root.Position + Vector3.new(0, 3.2, 0)) * CFrame.Angles(math.rad(90), 0, tick() * 3)
                 task.wait()
             end
             if halo then halo:Destroy() end
@@ -308,9 +236,9 @@ slaTab:Button({
         local function CreateHorn(side)
             local horn = Instance.new("Part")
             horn.Name = "DemonHorn"
-            horn.Size = Vector3.new(0.15,1.8,0.15)
+            horn.Size = Vector3.new(0.15, 1.8, 0.15)
             horn.Material = Enum.Material.Neon
-            horn.Color = Color3.fromRGB(255,0,0)
+            horn.Color = Color3.fromRGB(255, 0, 0)
             horn.Anchored = true
             horn.CanCollide = false
             horn.CanTouch = false
@@ -320,27 +248,27 @@ slaTab:Button({
             local mesh = Instance.new("SpecialMesh")
             mesh.MeshType = Enum.MeshType.FileMesh
             mesh.MeshId = "rbxassetid://1033714"
-            mesh.Scale = Vector3.new(0.25,1.8,0.25)
+            mesh.Scale = Vector3.new(0.25, 1.8, 0.25)
             mesh.Parent = horn
 
             local smoke = Instance.new("ParticleEmitter")
             smoke.Texture = "rbxasset://textures/particles/smoke_main.dds"
-            smoke.Color = ColorSequence.new(Color3.fromRGB(0,0,0))
+            smoke.Color = ColorSequence.new(Color3.fromRGB(0, 0, 0))
             smoke.Rate = 25
-            smoke.Speed = NumberRange.new(0.5,1.5)
-            smoke.Lifetime = NumberRange.new(1,2)
+            smoke.Speed = NumberRange.new(0.5, 1.5)
+            smoke.Lifetime = NumberRange.new(1, 2)
             smoke.Size = NumberSequence.new{
-                NumberSequenceKeypoint.new(0,0.4),
-                NumberSequenceKeypoint.new(1,0)
+                NumberSequenceKeypoint.new(0, 0.4),
+                NumberSequenceKeypoint.new(1, 0)
             }
             smoke.Parent = horn
 
             local lightning = Instance.new("ParticleEmitter")
-            lightning.Color = ColorSequence.new(Color3.fromRGB(255,0,0))
+            lightning.Color = ColorSequence.new(Color3.fromRGB(255, 0, 0))
             lightning.LightEmission = 1
             lightning.Rate = 40
-            lightning.Speed = NumberRange.new(2,5)
-            lightning.Lifetime = NumberRange.new(0.1,0.3)
+            lightning.Speed = NumberRange.new(2, 5)
+            lightning.Lifetime = NumberRange.new(0.1, 0.3)
             lightning.Size = NumberSequence.new(0.15)
             lightning.Parent = horn
 
@@ -348,16 +276,16 @@ slaTab:Button({
 
             local offset
             if side == "Left" then
-                offset = CFrame.new(-0.35,0.45,-0.05) * CFrame.Angles(math.rad(-15), 0, math.rad(45))
+                offset = CFrame.new(-0.35, 0.45, -0.05) * CFrame.Angles(math.rad(-15), 0, math.rad(45))
             else
-                offset = CFrame.new(0.35,0.45,-0.05) * CFrame.Angles(math.rad(-15), 0, math.rad(-45))
+                offset = CFrame.new(0.35, 0.45, -0.05) * CFrame.Angles(math.rad(-15), 0, math.rad(-45))
             end
 
             local conn = RunService.Heartbeat:Connect(function()
                 if not _G.SkinEnabled then return end
                 if head.Parent and horn.Parent then
-                    local pulse = (math.sin(tick()*4)+1)/2
-                    horn.Color = Color3.fromRGB(55 + (200*pulse), 0, 0)
+                    local pulse = (math.sin(tick() * 4) + 1) / 2
+                    horn.Color = Color3.fromRGB(55 + (200 * pulse), 0, 0)
                     horn.CFrame = head.CFrame * offset
                 end
             end)
@@ -367,25 +295,25 @@ slaTab:Button({
         CreateHorn("Left")
         CreateHorn("Right")
 
-        for i = 1,6 do
+        for i = 1, 6 do
             local model = Instance.new("Model")
             model.Name = "OrbitKatana"
             model.Parent = workspace
 
             local blade = Instance.new("Part")
-            blade.Size = Vector3.new(0.15,4,0.35)
+            blade.Size = Vector3.new(0.15, 4, 0.35)
             blade.Material = Enum.Material.Neon
-            blade.Color = Color3.fromRGB(255,0,0)
+            blade.Color = Color3.fromRGB(255, 0, 0)
             blade.Anchored = true
             blade.CanCollide = false
             blade.Parent = model
 
             local att0 = Instance.new("Attachment")
-            att0.Position = Vector3.new(0,-1.95,0)
+            att0.Position = Vector3.new(0, -1.95, 0)
             att0.Parent = blade
 
             local att1 = Instance.new("Attachment")
-            att1.Position = Vector3.new(0,1.95,0)
+            att1.Position = Vector3.new(0, 1.95, 0)
             att1.Parent = blade
 
             local trail = Instance.new("Trail")
@@ -396,30 +324,30 @@ slaTab:Button({
             trail.FaceCamera = false
             trail.Parent = blade
             trail.Color = ColorSequence.new({
-                ColorSequenceKeypoint.new(0, Color3.fromRGB(255,0,0)),
-                ColorSequenceKeypoint.new(1, Color3.fromRGB(40,0,0))
+                ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(40, 0, 0))
             })
 
             local smoke = Instance.new("ParticleEmitter")
             smoke.Texture = "rbxasset://textures/particles/smoke_main.dds"
-            smoke.Color = ColorSequence.new(Color3.fromRGB(0,0,0))
+            smoke.Color = ColorSequence.new(Color3.fromRGB(0, 0, 0))
             smoke.Rate = 10
-            smoke.Lifetime = NumberRange.new(0.5,1)
-            smoke.Speed = NumberRange.new(0,1)
+            smoke.Lifetime = NumberRange.new(0.5, 1)
+            smoke.Speed = NumberRange.new(0, 1)
             smoke.Parent = blade
 
             local handle = Instance.new("Part")
-            handle.Size = Vector3.new(0.25,1,0.25)
+            handle.Size = Vector3.new(0.25, 1, 0.25)
             handle.Material = Enum.Material.SmoothPlastic
-            handle.Color = Color3.fromRGB(15,15,15)
+            handle.Color = Color3.fromRGB(15, 15, 15)
             handle.Anchored = true
             handle.CanCollide = false
             handle.Parent = model
 
             local guard = Instance.new("Part")
-            guard.Size = Vector3.new(1,0.15,0.15)
+            guard.Size = Vector3.new(1, 0.15, 0.15)
             guard.Material = Enum.Material.Neon
-            guard.Color = Color3.fromRGB(120,0,0)
+            guard.Color = Color3.fromRGB(120, 0, 0)
             guard.Anchored = true
             guard.CanCollide = false
             guard.Parent = model
@@ -427,16 +355,16 @@ slaTab:Button({
             task.spawn(function()
                 while model.Parent and root.Parent and _G.SkinEnabled do
                     local t = tick() * 1.8
-                    local angle = math.rad((i-1)*60) + t
+                    local angle = math.rad((i - 1) * 60) + t
                     local radius = 5
-                    local pos = root.Position + Vector3.new(math.cos(angle)*radius, 2, math.sin(angle)*radius)
-                    local pulse = (math.sin(tick()*5)+1)/2
-                    blade.Color = Color3.fromRGB(55 + (200*pulse), 0, 0)
+                    local pos = root.Position + Vector3.new(math.cos(angle) * radius, 2, math.sin(angle) * radius)
+                    local pulse = (math.sin(tick() * 5) + 1) / 2
+                    blade.Color = Color3.fromRGB(55 + (200 * pulse), 0, 0)
                     guard.Color = blade.Color
                     local cf = CFrame.new(pos) * CFrame.Angles(0, angle, math.rad(180))
                     blade.CFrame = cf
-                    handle.CFrame = cf * CFrame.new(0,2.5,0)
-                    guard.CFrame = cf * CFrame.new(0,2,0)
+                    handle.CFrame = cf * CFrame.new(0, 2.5, 0)
+                    guard.CFrame = cf * CFrame.new(0, 2, 0)
                     task.wait()
                 end
                 if model then model:Destroy() end
@@ -460,8 +388,8 @@ slaTab:Button({
 
         local function splitText(text)
             if math.random() < 0.35 then
-                local mid = math.floor(#text/2)
-                return text:sub(1, mid) .. " " .. text:sub(mid+1)
+                local mid = math.floor(#text / 2)
+                return text:sub(1, mid) .. " " .. text:sub(mid + 1)
             end
             return text
         end
@@ -487,7 +415,7 @@ slaTab:Button({
             local humanoid = character:WaitForChild("Humanoid")
 
             auraHolder = Instance.new("Part")
-            auraHolder.Size = Vector3.new(1,1,1)
+            auraHolder.Size = Vector3.new(1, 1, 1)
             auraHolder.Anchored = true
             auraHolder.CanCollide = false
             auraHolder.Transparency = 1
@@ -501,12 +429,12 @@ slaTab:Button({
                 gui.Parent = auraHolder
 
                 local label = Instance.new("TextLabel")
-                label.Size = UDim2.new(1,0,1,0)
+                label.Size = UDim2.new(1, 0, 1, 0)
                 label.BackgroundTransparency = 1
                 label.TextScaled = true
                 label.Font = Enum.Font.Arcade
                 label.TextSize = 70
-                label.TextColor3 = Color3.fromRGB(255,0,0)
+                label.TextColor3 = Color3.fromRGB(255, 0, 0)
                 label.TextStrokeTransparency = 0.3
                 label.Parent = gui
                 table.insert(labels, label)
@@ -525,7 +453,7 @@ slaTab:Button({
 
                 local t = tick()
                 local angle = t * 2
-                auraHolder.Position = hrp.Position + Vector3.new(math.cos(angle)*3, 2 + math.sin(t*3)*0.6, math.sin(angle)*3)
+                auraHolder.Position = hrp.Position + Vector3.new(math.cos(angle) * 3, 2 + math.sin(t * 3) * 0.6, math.sin(angle) * 3)
 
                 if t - lastSwitch > math.random(3, 6) / 10 then
                     lastSwitch = t
@@ -536,13 +464,13 @@ slaTab:Button({
                 local function getText(i)
                     local txt = auraTexts[i]
                     if math.random() < 0.35 then
-                        local mid = math.floor(#txt/2)
-                        return txt:sub(1, mid) .. " " .. txt:sub(mid+1)
+                        local mid = math.floor(#txt / 2)
+                        return txt:sub(1, mid) .. " " .. txt:sub(mid + 1)
                     end
                     return txt
                 end
 
-                local jitter = Vector3.new((math.random()-0.5)*0.9, (math.random()-0.5)*0.9, (math.random()-0.5)*0.9)
+                local jitter = Vector3.new((math.random() - 0.5) * 0.9, (math.random() - 0.5) * 0.9, (math.random() - 0.5) * 0.9)
                 auraHolder.Position = auraHolder.Position + jitter
 
                 labels[1].Text = getText(index1)
@@ -553,7 +481,7 @@ slaTab:Button({
                     l.TextTransparency = (math.random() < 0.2) and 1 or 0
                 end
 
-                local c = (math.random() < 0.5) and Color3.fromRGB(255,0,0) or Color3.fromRGB(0,0,0)
+                local c = (math.random() < 0.5) and Color3.fromRGB(255, 0, 0) or Color3.fromRGB(0, 0, 0)
                 labels[1].TextColor3 = c
                 labels[2].TextColor3 = c
             end)
@@ -568,8 +496,9 @@ slaTab:Button({
     end
 })
 
-slaTab:Button({
+slaSection:Button({
     Title = "Titan TV Man皮肤",
+    Icon = "tv",
     Callback = function()
         local Players = game:GetService("Players")
         local RunService = game:GetService("RunService")
@@ -780,8 +709,7 @@ slaTab:Button({
 
         print("Titan TV Man BLACK SMOKE Loaded")
 
-        -- 剑阵部分
-        local char2 = player.Character or player.CharacterAdded:Wait()
+        local char2 = plr.Character or plr.CharacterAdded:Wait()
         local root2 = char2:WaitForChild("HumanoidRootPart")
         local swordCount = 6
         local spacing = 1.3
@@ -924,121 +852,127 @@ slaTab:Button({
     end
 })
 
-slaTab:Button({
+slaSection:Button({
     Title = "几何体皮肤",
+    Icon = "shapes",
     Callback = function()
         loadstring(game:HttpGet("https://encrypt-x.pages.dev/Scripts?Id=8726057978642"))("8726057978642")
     end
 })
 
-slaTab:Button({
+slaSection:Button({
     Title = "Mystic 管理员皮肤",
+    Icon = "wand-sparkles",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/ElderRealNofake/Forsaken-Skin-Vroom/refs/heads/main/Myst"))()
     end
 })
 
-slaTab:Button({
+slaSection:Button({
     Title = "Sancho 管理员皮肤",
+    Icon = "shield-check",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/ElderRealNofake/Forsaken-Skin-Vroom/refs/heads/main/San"))()
     end
 })
 
-slaTab:Button({
+slaSection:Button({
     Title = "Noli",
+    Icon = "user-round",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/ElderRealNofake/Forsaken-Skin-Vroom/refs/heads/main/Noli"))()
     end
 })
 
-slaTab:Button({
+slaSection:Button({
     Title = "访客 666",
+    Icon = "ghost",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/ElderRealNofake/Forsaken-Skin-Vroom/refs/heads/main/G666"))()
     end
 })
 
-johTab:Section({
+local johSection = johTab:Section({
     Title = "约翰.多皮肤列表",
-    Box = true,
-    Opened = true,
+    Opened = true
 })
 
-johTab:Button({
+johSection:Button({
     Title = "歼灭",
+    Icon = "sword",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/ElderRealNofake/Forsaken-Skin-Vroom/refs/heads/main/Annihilation"))()
     end
 })
 
-johTab:Button({
+johSection:Button({
     Title = "圆规小姐",
+    Icon = "compass",
     Callback = function()
         loadstring(game:HttpGet("https://protected-roblox-scripts.onrender.com/2eb46abf5cea8f923296a7f4b27fa868"))()
     end
 })
 
-cooTab:Section({
+local cooSection = cooTab:Section({
     Title = "酷小孩皮肤列表",
-    Box = true,
-    Opened = true,
+    Opened = true
 })
 
-cooTab:Button({
+cooSection:Button({
     Title = "2011 X",
+    Icon = "user",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/ElderRealNofake/Forsaken-Skin-Vroom/refs/heads/main/2011x"))()
     end
 })
 
-lXlTab:Section({
+local lXlSection = lXlTab:Section({
     Title = "1X1X1X1皮肤列表",
-    Box = true,
-    Opened = true,
+    Opened = true
 })
 
-lXlTab:Button({
+lXlSection:Button({
     Title = "Gabriel",
+    Icon = "swords",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/ElderRealNofake/Forsaken-Skin-Vroom/refs/heads/main/Gabriel"))()
     end
 })
 
-sheTab:Section({
+local sheSection = sheTab:Section({
     Title = "谢德莱茨基皮肤列表",
-    Box = true,
-    Opened = true,
+    Opened = true
 })
 
-sheTab:Button({
+sheSection:Button({
     Title = "心碎之人",
+    Icon = "heart-crack",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/ElderRealNofake/Forsaken-Skin-Vroom/refs/heads/main/HeartBroken%20Boohoo"))()
     end
 })
 
-chaTab:Section({
+local chaSection = chaTab:Section({
     Title = "机会皮肤列表",
-    Box = true,
-    Opened = true,
+    Opened = true
 })
 
-chaTab:Button({
+chaSection:Button({
     Title = "lsaac",
+    Icon = "dice-5",
     Callback = function()
         loadstring(game:HttpGet("https://pastebin.com/raw/heC1USQ1"))()
     end
 })
 
-twoTab:Section({
+local twoSection = twoTab:Section({
     Title = "两次皮肤列表",
-    Box = true,
-    Opened = true,
+    Opened = true
 })
 
-twoTab:Button({
+twoSection:Button({
     Title = "小宝宝",
+    Icon = "baby",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/ElderRealNofake/Forsaken-Skin-Vroom/refs/heads/main/BTT"))()
     end
